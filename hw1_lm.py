@@ -133,18 +133,16 @@ class UnigramModel(LanguageModel):
         self.vocab = set()
         
         for sen in corpus:
-            for word in sen:
-                if word == start:
-                    continue
-                self.counts[word] += 1.0
+            for i in range(1, len(sen)): # ignore start symbol for unigram counts
+                self.counts[(sen[i])] += 1.0 # unigram counts
                 self.total += 1.0
-                self.vocab.add(word)
+                self.vocab.add(sen[i])
 
         self.vocab_size = len(self.vocab)
 
     # Returns the probability of word in the distribution
     def prob(self, word):
-        return self.counts[word]/self.total
+        return self.counts[(word)]/self.total
     
     # Generate a single random word according to the distribution
     def draw(self):
@@ -166,12 +164,10 @@ class UnigramModel(LanguageModel):
 
     def getSentenceProbability(self, sen):
         log_prob_sum = 0.0
-        for word in sen:
-            if word == start:
-                continue
-            if self.prob(word) == 0.0:
+        for i in range(1, len(sen)):
+            if self.prob(sen[i]) == 0.0:
                 return 0.0
-            log_prob_sum += log(self.prob(word))
+            log_prob_sum += log(self.prob(sen[i]))
 
         return exp(log_prob_sum)
 
@@ -179,14 +175,12 @@ class UnigramModel(LanguageModel):
         log_prob_sum = 0.0
         corpus_total = 0.0
         for sen in corpus:
-            for word in sen:
-                if word == start:
-                    continue
+            for i in range(1, len(sen)):
                 corpus_total += 1.0
-                if self.prob(word) == 0.0:
-                    print('Unknown word in Test corpus')
+                if self.prob(sen[i]) == 0.0:
+                    print('Unknown unigram in corpus')
                     sys.exit()
-                log_prob_sum += log(self.prob(word))
+                log_prob_sum += log(self.prob(sen[i]))
 
         return exp(-log_prob_sum/corpus_total)
 
@@ -228,19 +222,17 @@ if __name__ == "__main__":
 
     # Run sample unigram dist code
     unigram_model = UnigramModel(trainCorpus)
-    print("UnigramModel output:")
-    print("Probability of \"vader\":", unigram_model.prob("vader"))
+    print("\nUnigramModel output:")
+    print("Probability of \"course\":", unigram_model.prob("course"))
     print("Probability of \""+UNK+"\":", unigram_model.prob(UNK))
-    print("\"Random\" draw:", unigram_model.draw())
+    print("Random draw:", unigram_model.draw())
     print("posTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(negTestCorpus))
 
-    print()
-
     smoothed_unigram_model = SmoothedUnigramModel(trainCorpus)
-    print("SmoothedUnigramModel output:")
-    print("Probability of \"vader\":", smoothed_unigram_model.prob("vader"))
+    print("\nSmoothedUnigramModel output:")
+    print("Probability of \"course\":", smoothed_unigram_model.prob("course"))
     print("Probability of \""+UNK+"\":", smoothed_unigram_model.prob(UNK))
-    print("\"Random\" draw:", smoothed_unigram_model.draw())
+    print("Random draw:", smoothed_unigram_model.draw())
     print("posTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
