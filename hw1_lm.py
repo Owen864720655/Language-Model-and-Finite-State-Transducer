@@ -22,10 +22,10 @@ from math import log, exp
 # Read a text file into a corpus (list of sentences (which in turn are lists of words))
 def readFileToCorpus(f):
     if os.path.isfile(f):
-        file = open(f, "r") # open the input file in read-only mode
+        file = open(f, 'r') # open the input file in read-only mode
         i = 0 # this is just a counter to keep track of the sentence numbers
         corpus = [] # this will become a list of sentences
-        print("Reading file", f)
+        print('Reading file', f)
         for line in file:
             i += 1
             sentence = line.split() # split the line into a list of words
@@ -34,7 +34,7 @@ def readFileToCorpus(f):
         return corpus
     else:
     # ideally we would throw an exception here, but this will suffice
-        print("Error: corpus file ", f, " does not exist")
+        print('Error: corpus file ', f, ' does not exist')
         sys.exit() # exit the script
 
 
@@ -78,9 +78,9 @@ def preprocessTest(vocab, corpus):
 
 
 # Constants 
-UNK = "UNK"     # Unknown word token
-start = "<s>"   # Start-of-sentence token
-end = "</s>"    # End-of-sentence token
+UNK = 'UNK'     # Unknown word token
+start = '<s>'   # Start-of-sentence token
+end = '</s>'    # End-of-sentence token
 
 
 #--------------------------------------------------------------
@@ -97,19 +97,19 @@ class LanguageModel:
     # Generate a sentence by drawing words according to the 
     # model's probability distribution
     def generateSentence(self):
-        print("Implement the generateSentence method in each subclass")
-        return "mary had a little lamb ."
+        print('Implement the generateSentence method in each subclass')
+        return 'mary had a little lamb .'
 
     # Given a sentence (sen), return the probability of 
     # that sentence under the model
     def getSentenceProbability(self, sen):
-        print("Implement the getSentenceProbability method in each subclass")
+        print('Implement the getSentenceProbability method in each subclass')
         return 0.0
 
     # Given a corpus, calculate and return its perplexity 
     # (normalized inverse log probability)
     def getCorpusPerplexity(self, corpus):
-        print("Implement the getCorpusPerplexity method")
+        print('Implement the getCorpusPerplexity method')
         return 0.0
 
     # Given a file (filename) and the number of sentences, generate a list
@@ -119,7 +119,7 @@ class LanguageModel:
         for i in range(0, numberOfSentences):
             sen = self.generateSentence()
             prob = self.getSentenceProbability(sen)
-            stringGenerated = str(prob) + " " + " ".join(sen) 
+            stringGenerated = str(prob) + ' ' + ' '.join(sen) 
             filePointer.write(stringGenerated + '\n')
         filePointer.close()
             
@@ -178,7 +178,7 @@ class UnigramModel(LanguageModel):
                 corpus_total += 1.0
                 if self.prob(sen[i]) == 0.0:
                     print('Unknown unigram in corpus')
-                    return float("inf")
+                    return float('inf')
                 log_prob_sum += log(self.prob(sen[i]))
 
         return exp(-log_prob_sum/corpus_total)
@@ -247,7 +247,7 @@ class BigramModel(LanguageModel):
                 corpus_total += 1.0
                 if self.prob(sen[i], sen[i-1]) == 0.0:
                     print('Unknown bigram in corpus')
-                    return float("inf")
+                    return float('inf')
                 log_prob_sum += log(self.prob(sen[i], sen[i-1]))
 
         return exp(-log_prob_sum/corpus_total)
@@ -256,7 +256,7 @@ class BigramModel(LanguageModel):
 #-------------------------------------------
 # The main routine
 #-------------------------------------------
-if __name__ == "__main__":
+if __name__ == '__main__':
     # read your corpora
     trainCorpus = readFileToCorpus('train.txt')
     trainCorpus = preprocess(trainCorpus)
@@ -274,28 +274,28 @@ if __name__ == "__main__":
 
     # Run sample unigram dist code
     unigram_model = UnigramModel(trainCorpus)
-    print("\nUnigramModel output:")
-    print("Probability of \"course\":", unigram_model.prob("course"))
-    print("Probability of \""+UNK+"\":", unigram_model.prob(UNK))
-    print("Random draw:", unigram_model.draw())
-    print("posTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(posTestCorpus))
-    print("negTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(negTestCorpus))
-    unigram_model.generateSentencesToFile(5, "unigram_output.txt")
+    print('\nUnigramModel output:')
+    print('Probability of "course":', unigram_model.prob('course'))
+    print('Probability of "'+UNK+'":', unigram_model.prob(UNK))
+    print('Random draw:', unigram_model.draw())
+    print('posTestCorpus Perplexity:', unigram_model.getCorpusPerplexity(posTestCorpus))
+    print('negTestCorpus Perplexity:', unigram_model.getCorpusPerplexity(negTestCorpus))
+    unigram_model.generateSentencesToFile(5, 'unigram_output.txt')
 
     smoothed_unigram_model = SmoothedUnigramModel(trainCorpus)
-    print("\nSmoothedUnigramModel output:")
-    print("Probability of \"course\":", smoothed_unigram_model.prob("course"))
-    print("Probability of \""+UNK+"\":", smoothed_unigram_model.prob(UNK))
-    print("Random draw:", smoothed_unigram_model.draw())
-    print("posTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
-    print("negTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
-    smoothed_unigram_model.generateSentencesToFile(5, "smoothed_unigram_output.txt")
+    print('\nSmoothedUnigramModel output:')
+    print('Probability of "course":', smoothed_unigram_model.prob('course'))
+    print('Probability of "'+UNK+'":', smoothed_unigram_model.prob(UNK))
+    print('Random draw:', smoothed_unigram_model.draw())
+    print('posTestCorpus Perplexity:', smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
+    print('negTestCorpus Perplexity:', smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
+    smoothed_unigram_model.generateSentencesToFile(5, 'smoothed_unigram_output.txt')
 
     bigram_model = BigramModel(trainCorpus)
-    print("\nBigramModel output:")
-    print("Probability of \"course\" given previous word \"of\":", bigram_model.prob("of", "course"))
-    print("Probability of \"i "+UNK+"\":", bigram_model.prob("i", UNK))
-    print("Random draw given previous word \"of\":", bigram_model.draw("of"))
-    print("posTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(posTestCorpus))
-    print("negTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(negTestCorpus))
-    bigram_model.generateSentencesToFile(5, "bigram_output.txt")
+    print('\nBigramModel output:')
+    print('Probability of "course" given previous word "of":', bigram_model.prob('of', 'course'))
+    print('Probability of "i '+UNK+'":', bigram_model.prob('i', UNK))
+    print('Random draw given previous word "of":', bigram_model.draw('of'))
+    print('posTestCorpus Perplexity:', bigram_model.getCorpusPerplexity(posTestCorpus))
+    print('negTestCorpus Perplexity:', bigram_model.getCorpusPerplexity(negTestCorpus))
+    bigram_model.generateSentencesToFile(5, 'bigram_output.txt')
