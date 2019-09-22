@@ -198,7 +198,60 @@ class SmoothedUnigramModel(UnigramModel):
 # Unsmoothed bigram language model
 class BigramModel(LanguageModel):
     def __init__(self, corpus):
-        print("Subtask: implement the unsmoothed bigram language model")
+        self.counts = defaultdict(float)
+        
+        for sen in corpus:
+            self.counts[(sen[0])] += 1.0
+            for i in range(1, len(sen)): # ignore start symbol for unigram counts
+                self.counts[(sen[i])] += 1.0 # unigram counts
+                self.counts[(sen[i-1], sen[i])] += 1.0 # bigram counts
+
+    # Returns the probability of word in the distribution
+    def prob(self, word, prev_word):
+        if self.counts[(prev_word, word)] == 0.0:
+            return 0.0
+        return self.counts[(prev_word, word)]/self.counts[(prev_word)]
+    
+    # Generate a single random word according to the distribution given a prev_word
+    def draw(self, prev_word):
+        rand = random.random()
+        potential_next_words = [ngrams[1] for ngrams in self.counts.keys() if len(ngrams) == 2 and ngrams[0] == prev_word]
+        for word in potential_next_words:
+            rand -= self.prob(word, prev_word)
+            if rand <= 0.0:
+                return word
+    
+    def generateSentence(self):
+        sen = [start]
+        while True:
+            next_word = self.draw(sen[-1])
+            sen.append(next_word)
+            if next_word == end:
+                break
+
+        return sen
+
+    def getSentenceProbability(self, sen):
+        log_prob_sum = 0.0
+        for i in range(1, len(sen)):
+            if self.prob(sen[i], sen[i-1]) == 0.0:
+                return 0.0
+            log_prob_sum += log(self.prob(sen[i], sen[i-1]))
+
+        return exp(log_prob_sum)
+
+    def getCorpusPerplexity(self, corpus):
+        log_prob_sum = 0.0
+        corpus_total = 0.0
+        for sen in corpus:
+            for i in range(1, len(sen)):
+                corpus_total += 1.0
+                if self.prob(sen[i], sen[i-1]) == 0.0:
+                    print('Unknown bigram in corpus')
+                    sys.exit()
+                log_prob_sum += log(self.prob(sen[i], sen[i-1]))
+
+        return exp(-log_prob_sum/corpus_total)
 
 
 #-------------------------------------------
@@ -236,3 +289,11 @@ if __name__ == "__main__":
     print("Random draw:", smoothed_unigram_model.draw())
     print("posTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
+
+    bigram_model = BigramModel(trainCorpus)
+    print("\nBigramModel output:")
+    print("Probability of \"course\" given previous word \"of\":", bigram_model.prob("of", "course"))
+    print("Probability of \"i "+UNK+"\":", bigram_model.prob("i", UNK))
+    print("Random draw given previous word \"of\":", bigram_model.draw("of"))
+    print("posTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(posTestCorpus))
+    print("negTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(negTestCorpus))
