@@ -2,6 +2,7 @@ from __future__ import division
 import os.path
 import sys 
 
+
 class Transition:
     # string_in
     # string_out
@@ -19,6 +20,7 @@ class Transition:
             return True
         else:
             return False
+
 
 class FSTstate:
     # id: an integer ID of the state
@@ -41,7 +43,7 @@ class FSTstate:
             self.transitions[inString].add(newTransition)
     
     def parseInputFromStartState(self, inString):
-        parseTuple = ("", self.id)
+        parseTuple = ('', self.id)
         parses = []
         (accept, stringParses) = self.parseInput(inString)
         if accept:
@@ -57,15 +59,15 @@ class FSTstate:
         
         DEBUG = False
         if DEBUG:
-            print("parseInput: state: ", self.id, " parsing: " , inString)
+            print('parseInput: state:', self.id, 'parsing:', inString)
         
         # Case 1: no suffix
-        if inString == "":
+        if inString == '':
             epsilonParses = []
             epsilonAccepted = False
             # try all epsilon transitions
-            if "" in self.transitions:
-                transSet = self.transitions[""]
+            if '' in self.transitions:
+                transSet = self.transitions['']
                 for t in transSet:
                     outString = t.string_out
                     toStateID = t.state_out
@@ -88,11 +90,11 @@ class FSTstate:
             # if this is a final state, add an empty parse
             if self.isFinal or parses != []:
                 if DEBUG:
-                    print("Accepted in state ", self.id)
+                    print('Accepted in state', self.id)
                 return (True, parses)
             else:
                 if DEBUG:
-                    print("Rejected in state ", self.id)
+                    print('Rejected in state', self.id)
                 return (False, None)
         # case 2: non-empty suffix: there needs to be one suffix that parses!)
         hasAcceptedSuffix = False
@@ -100,10 +102,10 @@ class FSTstate:
             prefix = inString[0:i]
             suffix = inString[i:len(inString)]
             if DEBUG:
-                print("\t prefix: \'", prefix, "\' I=", i)
+                print('\t prefix: \'', prefix, '\' I=', i)
             if prefix in self.transitions:
                 if DEBUG:
-                     print("\t prefix: ", prefix,  "suffix: ", suffix, "I=", i)
+                     print('\t prefix:', prefix,  'suffix:', suffix, 'I=', i)
                 transSet = self.transitions[prefix]
                 for t in transSet:
                     outString = t.string_out
@@ -126,23 +128,19 @@ class FSTstate:
         else:
             return (False, None)
                             
-
-
     def printState(self):
         if self.isFinal:
-            FINAL = "FINAL"
-        else: FINAL = ""
-        print("State", self.id, FINAL)
+            FINAL = 'FINAL'
+        else: FINAL = ''
+        print('State', self.id, FINAL)
         for inString in self.transitions:
             transList = self.transitions[inString]
             for t in transList:
-                print("\t", inString, ":", t.string_out, " => ", t.state_out)
-
-                    
+                print('\t', inString, ':', t.string_out, '=>', t.state_out)
 
 
 class FST:
-    def __init__(self, initialStateName="q0"):
+    def __init__(self, initialStateName='q0'):
         self.nStates = 0
         self.initState = FSTstate(initialStateName, False, self) 
         self.allStates = dict()
@@ -150,10 +148,10 @@ class FST:
        
     def addState(self, name, isFinal=False):
         if name in self.allStates:
-            print("ERROR addState: state", name, "exists already")
+            print('ERROR addState: state', name, 'exists already')
             sys.exit()
         elif len(self.allStates) >= 30:
-            print("ERROR addState: you can't have more than 30 states")
+            print('ERROR addState: you can\'t have more than 30 states')
             sys.exit()
         else:  
             newState = FSTstate(name, isFinal, self)
@@ -161,13 +159,13 @@ class FST:
 
     def addTransition(self, inStateName, inString, outString, outStateName):
         if (len(inString) > 1):
-            print("ERROR: addTransition: input string ", inString, " is longer than one character")
+            print('ERROR: addTransition: input string', inString, 'is longer than one character')
             sys.exit()
         if inStateName not in self.allStates:
-            print("ERROR: addTransition: state ", inStateName, " does not exist")
+            print('ERROR: addTransition: state', inStateName, 'does not exist')
             sys.exit()
         if outStateName not in self.allStates:
-            print("ERROR: addTransition: state ", outStateName, " does not exist")
+            print('ERROR: addTransition: state', outStateName, 'does not exist')
             sys.exit()
         inState = self.allStates[inStateName]
         inState.addTransition(inString, outString, outStateName)
@@ -175,24 +173,24 @@ class FST:
     # epsilon:epsilon
     def addEpsilonTransition(self, inStateName, outStateName):
         if inStateName not in self.allStates:
-            print("ERROR: addEpsilonTransition: state ", inStateName, " does not exist")
+            print('ERROR: addEpsilonTransition: state', inStateName, 'does not exist')
             sys.exit()
         if outStateName not in self.allStates:
-            print("ERROR: addEpsilonTransition: state ", outStateName, " does not exist")
+            print('ERROR: addEpsilonTransition: state', outStateName, 'does not exist')
             sys.exit()
         if inStateName == outStateName:
-            print("ERROR: we don't allow epsilon loops")
+            print('ERROR: we don\'t allow epsilon loops')
             sys.exit()
         inState = self.allStates[inStateName]
-        inState.addTransition("", "", outStateName)
+        inState.addTransition('', '', outStateName)
 
     # map every element in inStringSet to itself
     def addSetTransition(self, inStateName, inStringSet, outStateName):
          if inStateName not in self.allStates:
-            print("ERROR: addSetTransition: state ", inStateName, " does not exist")
+            print('ERROR: addSetTransition: state', inStateName, 'does not exist')
             sys.exit()
          if outStateName not in self.allStates:
-            print("ERROR: addSetTransition: state ", outStateName, " does not exist")
+            print('ERROR: addSetTransition: state', outStateName, 'does not exist')
             sys.exit()
          for s in inStringSet:
             self.addTransition(inStateName, s, s, outStateName)
@@ -200,20 +198,20 @@ class FST:
     # map string to itself
     def addSelfTransition(self, inStateName, inString, outStateName):
          if inStateName not in self.allStates:
-            print("ERROR: addSetTransition: state ", inStateName, " does not exist")
+            print('ERROR: addSetTransition: state', inStateName, 'does not exist')
             sys.exit()
          if outStateName not in self.allStates:
-            print("ERROR: addSetTransition: state ", outStateName, " does not exist")
+            print('ERROR: addSetTransition: state', outStateName, 'does not exist')
             sys.exit()
          self.addTransition(inStateName, inString, inString, outStateName)
 
     # map every element in inStringSet to outString
     def addSetToStringTransition(self, inStateName, inStringSet, outString, outStateName):
          if inStateName not in self.allStates:
-            print("ERROR: addSetDummyTransition: state ", inStateName, " does not exist")
+            print('ERROR: addSetDummyTransition: state', inStateName, 'does not exist')
             sys.exit()
          if outStateName not in self.allStates:
-            print("ERROR: addSetDummyTransition: state ", outStateName, " does not exist")
+            print('ERROR: addSetDummyTransition: state', outStateName, 'does not exist')
             sys.exit()
          for s in inStringSet:
             self.addTransition(inStateName, s, outString, outStateName)
@@ -222,50 +220,50 @@ class FST:
     # map every element in inStirngSet to outString
     def addSetEpsilonTransition(self, inStateName, inStringSet, outStateName):
          if inStateName not in self.allStates:
-            print("ERROR: addSetEpsilonTransition: state ", inStateName, " does not exist")
+            print('ERROR: addSetEpsilonTransition: state', inStateName, 'does not exist')
             sys.exit()
          if outStateName not in self.allStates:
-            print("ERROR: addSetEpsionTransition: state ", outStateName, " does not exist")
+            print('ERROR: addSetEpsionTransition: state', outStateName, 'does not exist')
             sys.exit()
          for s in inStringSet:
-            self.addTransition(inStateName, s, "", outStateName)
+            self.addTransition(inStateName, s, '', outStateName)
             
     def parseInput(self, inString):
         SHOW_STATES = False # True
         inString = inString.rstrip('\n')
         (canParse, allParses)  = self.initState.parseInputFromStartState(inString)
-        allParsesAsString = ""
+        allParsesAsString = ''
         if canParse:
             for parse in allParses:
                 for tuple in parse:
                     outString, outState = tuple
                     allParsesAsString += outString
                 if SHOW_STATES:
-                    allParsesAsString += "\t  States: "
+                    allParsesAsString += '\t  States: '
                     i = 0
                     for tuple in parse:
                         i += 1
                         outString, outState = tuple
                         allParsesAsString += outState
                         if i < len(parse):
-                            allParsesAsString += " => "
-                    allParsesAsString += "; "
+                            allParsesAsString += '=>'
+                    allParsesAsString += '; '
           
-            print(inString, " ==> ", allParsesAsString)
+            print(inString, '==>', allParsesAsString)
             return True
         else:
-            print(inString, " ==> ", "FAIL")
+            print(inString, '==>', 'FAIL')
             return False
 
     def printFST(self):
-        print("Printing FST", str(self))
+        print('Printing FST', str(self))
         for stateID in self.allStates:
             state = self.allStates[stateID]
             state.printState()
 
     def parseInputFile(self, fileName):
         if os.path.isfile(fileName):
-            file = open(fileName, "r")
+            file = open(fileName, 'r')
             nParses = 0
             totalStrings = 0
             for line in file:
@@ -274,4 +272,4 @@ class FST:
                 if canParse:
                     nParses += 1
             fraction = nParses/totalStrings
-            print("### ", fraction,  "(", nParses, " out of ", totalStrings, ") parsed") 
+            print('###', fraction, '(', nParses, 'out of', totalStrings, ') parsed') 
