@@ -179,7 +179,7 @@ class UnigramModel(LanguageModel):
                 corpus_total += 1.0
                 if self.prob(sen[i]) == 0.0:
                     print('Unknown unigram in corpus')
-                    sys.exit()
+                    return float("inf")
                 log_prob_sum += log(self.prob(sen[i]))
 
         return exp(-log_prob_sum/corpus_total)
@@ -192,7 +192,7 @@ class SmoothedUnigramModel(UnigramModel):
     
     # override UnigramModel prob method
     def prob(self, word):
-        return (self.counts[word]+1)/(self.total+self.vocab_size)
+        return (self.counts[(word)]+1)/(self.total+self.vocab_size)
 
 
 # Unsmoothed bigram language model
@@ -248,7 +248,7 @@ class BigramModel(LanguageModel):
                 corpus_total += 1.0
                 if self.prob(sen[i], sen[i-1]) == 0.0:
                     print('Unknown bigram in corpus')
-                    sys.exit()
+                    return float("inf")
                 log_prob_sum += log(self.prob(sen[i], sen[i-1]))
 
         return exp(-log_prob_sum/corpus_total)
