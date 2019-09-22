@@ -5,14 +5,18 @@ AZ = set('abcdefghijklmnopqrstuvwxyz')
 VOWS = set('aeiou')
 CONS = set('bcdfghjklmnprstvwxz')
 E = set('e')
+U = set('u')
 
 
 def buildFST():
     # The states:
     # ---------------------------------------
     f = FST('q0') # q0 is the initial (non-accepting) state
-    f.addState('q1') # a non-accepting state
-    f.addState('q_ing') # a non-accepting state
+    f.addState('q1')
+    f.addState('q_ing')
+    f.addState('q_drop_E')
+    f.addState('q_EE')
+    f.addState('q_IE')
     f.addState('q_EOW', True) # an accepting state
 
     # The transitions:
@@ -20,11 +24,19 @@ def buildFST():
     f.addSetTransition('q0', AZ, 'q1')
 
     f.addSetTransition('q1', AZ, 'q1')
+    f.addSetTransition('q1', CONS.union(U), 'q_drop_E')
+    f.addSetTransition('q1', E, 'q_EE')
     f.addSetTransition('q1', AZ-E, 'q_ing')
-    f.addTransition('q1', 'e', '', 'q_ing')
-    
+    f.addTransition('q1', 'i', '', 'q_IE')
+
     f.addTransition('q_ing', '', 'ing', 'q_EOW')
 
+    f.addTransition('q_drop_E', 'e', '', 'q_ing')
+
+    f.addSetTransition('q_EE', E, 'q_ing')
+
+    f.addTransition('q_IE', 'e', 'y', 'q_ing')
+    
     # Return your completed FST
     return f
     

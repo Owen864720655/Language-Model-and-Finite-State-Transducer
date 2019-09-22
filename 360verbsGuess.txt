@@ -5,7 +5,7 @@ add ==> adding
 admit ==> admiting
 advise ==> advising
 affect ==> affecting
-agree ==> agreing
+agree ==> agreeing
 aid ==> aiding
 aim ==> aiming
 amend ==> amending
@@ -84,7 +84,7 @@ depend ==> depending
 deploy ==> deploying
 design ==> designing
 desire ==> desiring
-die ==> diing
+die ==> dying
 direct ==> directing
 disarm ==> disarming
 divide ==> dividing
@@ -123,7 +123,7 @@ finish ==> finishing
 fire ==> firing
 fit ==> fiting
 fix ==> fixing
-flee ==> fleing
+flee ==> fleeing
 float ==> floating
 flood ==> flooding
 flow ==> flowing
@@ -132,7 +132,7 @@ follow ==> following
 fool ==> fooling
 force ==> forcing
 form ==> forming
-free ==> freing
+free ==> freeing
 freeze ==> freezing
 gain ==> gaining
 gather ==> gathering
@@ -191,7 +191,7 @@ leak ==> leaking
 leave ==> leaving
 lend ==> lending
 let ==> leting
-lie ==> liing
+lie ==> lying
 lift ==> lifting
 like ==> liking
 link ==> linking
@@ -272,7 +272,7 @@ run ==> runing
 sail ==> sailing
 save ==> saving
 say ==> saying
-see ==> seing
+see ==> seeing
 seem ==> seeming
 seize ==> seizing
 sell ==> selling
@@ -328,7 +328,7 @@ test ==> testing
 thank ==> thanking
 think ==> thinking
 throw ==> throwing
-tie ==> tiing
+tie ==> tying
 touch ==> touching
 trade ==> trading
 train ==> training
