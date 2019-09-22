@@ -26,7 +26,7 @@ def readFileToCorpus(f):
         file = open(f, "r") # open the input file in read-only mode
         i = 0 # this is just a counter to keep track of the sentence numbers
         corpus = [] # this will become a list of sentences
-        print("Reading file ", f)
+        print("Reading file", f)
         for line in file:
             i += 1
             sentence = line.split() # split the line into a list of words

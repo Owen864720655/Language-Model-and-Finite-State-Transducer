@@ -1,7 +1,7 @@
 from hw1_lm import *
 
 def runTests(modelStr, languageModel, sen, testCorpus):
-	print("**** " + modelStr + " ****")
+	print("\n**** " + modelStr + " ****")
 	senProb = 0.0
 	testPerp = 0.0
 	if modelStr == "unsmoothed_unigram":
@@ -83,7 +83,6 @@ def runTests(modelStr, languageModel, sen, testCorpus):
 
 if __name__ == '__main__':
 	sen = ["<s>", "I", "UNK", "</s>"]
-	#sentence = ["<s>", "the", "UNK", "</s>"]
 
 	# get the corpora
 	corpus = readFileToCorpus("test.txt") 
@@ -95,14 +94,8 @@ if __name__ == '__main__':
 	bigram = BigramModel(corpus)
 	
 	# test the models
-	
 	runTests("unsmoothed_unigram", unigram, sen, corpus)
 	runTests("smoothed_unigram", smoothedUnigram, sen, corpus)
 	runTests("unsmoothed_bigram", bigram, sen, corpus)
-	'''
-	runTests("unsmoothed_unigram", unigram, sentence, testCorpus)
-	runTests("smoothed_unigram", smoothedUnigram, sentence, testCorpus)
-	runTests("unsmoothed_bigram", bigram, sentence, testCorpus)
-	'''
 
 	#endif
