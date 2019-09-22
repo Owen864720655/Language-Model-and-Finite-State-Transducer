@@ -14,8 +14,6 @@ def runTests(modelStr, languageModel, sen, testCorpus):
 		senProb = 0.0
 		testPerp = 2.0771150367
 
-	#endif
-
 	print("---TEST: generateSentence()---")
 	modelSen = languageModel.generateSentence()
 	senTestPassed = False
@@ -24,13 +22,8 @@ def runTests(modelStr, languageModel, sen, testCorpus):
 			if isinstance(modelSen[0], str):
 				print("pass")
 				senTestPassed = True
-
-	#endif
-	#endif
-	#endif
 	if not senTestPassed:
 		print("fail; method did not return a list of strings")
-	#endif
 
 	print("---TEST: getSentenceProbability()---")
 	prob = round(languageModel.getSentenceProbability(sen), 10)
@@ -53,8 +46,6 @@ def runTests(modelStr, languageModel, sen, testCorpus):
 			print("hint: The smoothed unigram model with which you are "+\
 			"smoothing your bigram model may include the start token "+\
 			"in its distribution")
-	#endif
-	#endif
 
 	print("---TEST: getCorpusPerplexity---")
 	perp = round(languageModel.getCorpusPerplexity(testCorpus), 10)
@@ -77,9 +68,6 @@ def runTests(modelStr, languageModel, sen, testCorpus):
 			print("hint: The smoothed unigram model with which you are "+\
 			"smoothing your bigram model may include the start token "+\
 			"in its distribution")
-	#endif
-    #endif
-#enddef
 
 if __name__ == '__main__':
 	sen = ["<s>", "I", "UNK", "</s>"]
@@ -97,5 +85,3 @@ if __name__ == '__main__':
 	runTests("unsmoothed_unigram", unigram, sen, corpus)
 	runTests("smoothed_unigram", smoothedUnigram, sen, corpus)
 	runTests("unsmoothed_bigram", bigram, sen, corpus)
-
-	#endif

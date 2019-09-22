@@ -45,7 +45,6 @@ if __name__ == "__main__":
         quit()
     else:
         file = sys.argv[1]
-    #endif
 
     # Construct an FST for translating verb forms 
     # (Currently constructs a rudimentary, buggy FST; your task is to implement a better one.

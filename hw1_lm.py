@@ -33,18 +33,13 @@ def readFileToCorpus(f):
             # append this lis as an element to the list of sentences
             corpus.append(sentence)
             if i % 1000 == 0:
-    	# print a status message: str(i) turns int i into a string
-    	# so we can concatenate it
+    	        # print a status message
                 sys.stderr.write("Reading sentence " + str(i) + "\n")
-        #endif
-    #endfor
         return corpus
     else:
     # ideally we would throw an exception here, but this will suffice
         print("Error: corpus file ", f, " does not exist")
         sys.exit() # exit the script
-    #endif
-#enddef
 
 
 # Preprocess the corpus to help avoid sparsity
@@ -54,8 +49,6 @@ def preprocess(corpus):
     for sen in corpus:
 	    for word in sen:
 	       freqDict[word] += 1
-	#endfor
-    #endfor
 
     # replace rare words with unk
     for sen in corpus:
@@ -63,18 +56,13 @@ def preprocess(corpus):
             word = sen[i]
             if freqDict[word] < 2:
                 sen[i] = UNK
-	    #endif
-	#endfor
-    #endfor
 
     # bookend the sentences with start and end tokens
     for sen in corpus:
         sen.insert(0, start)
         sen.append(end)
-    #endfor
     
     return corpus
-#enddef
 
 def preprocessTest(vocab, corpus):
     # replace test words that were unseen in the training with unk
@@ -83,18 +71,13 @@ def preprocessTest(vocab, corpus):
             word = sen[i]
             if word not in vocab:
                 sen[i] = UNK
-	    #endif
-	#endfor
-    #endfor
     
     # bookend the sentences with start and end tokens
     for sen in corpus:
         sen.insert(0, start)
         sen.append(end)
-    #endfor
 
     return corpus
-#enddef
 
 # Constants 
 UNK = "UNK"     # Unknown word token
@@ -116,7 +99,6 @@ class LanguageModel:
       b) a unigram model smoothed using Laplace smoothing (SmoothedUnigramModel)
       c) an unsmoothed bigram model (BigramModel)
       """)
-    #enddef
 
     # Generate a sentence by drawing words according to the 
     # model's probability distribution
@@ -132,14 +114,12 @@ class LanguageModel:
     def getSentenceProbability(self, sen):
         print("Implement the getSentenceProbability method in each subclass")
         return 0.0
-    #enddef
 
     # Given a corpus, calculate and return its perplexity 
     # (normalized inverse log probability)
     def getCorpusPerplexity(self, corpus):
         print("Implement the getCorpusPerplexity method")
         return 0.0
-    #enddef
 
     # Given a file (filename) and the number of sentences, generate a list
     # of sentences and write each to file along with its model probability.
@@ -151,30 +131,21 @@ class LanguageModel:
             prob = self.getSentenceProbability(sen)
             stringGenerated = str(prob) + " " + " ".join(sen) 
             
-	#endfor
-    #enddef
-#endclass
 
 # Unigram language model
 class UnigramModel(LanguageModel):
     def __init__(self, corpus):
         print("Subtask: implement the unsmoothed unigram language model")
-    #endddef
-#endclass
 
 # Smoothed unigram language model (use laplace for smoothing)
 class SmoothedUnigramModel(LanguageModel):
     def __init__(self, corpus):
         print("Subtask: implement the smoothed unigram language model")
-    #endddef
-#endclass
 
 # Unsmoothed bigram language model
 class BigramModel(LanguageModel):
     def __init__(self, corpus):
         print("Subtask: implement the unsmoothed bigram language model")
-    #endddef
-#endclass
 
 # Sample class for a unsmoothed unigram probability distribution
 # Note: 
@@ -187,7 +158,6 @@ class UnigramDist:
         self.counts = defaultdict(float)
         self.total = 0.0
         self.train(corpus)
-    #endddef
 
     # Add observed counts from corpus to the distribution
     def train(self, corpus):
@@ -197,14 +167,10 @@ class UnigramDist:
                     continue
                 self.counts[word] += 1.0
                 self.total += 1.0
-            #endfor
-        #endfor
-    #enddef
 
     # Returns the probability of word in the distribution
     def prob(self, word):
         return self.counts[word]/self.total
-    #enddef
 
     # Generate a single random word according to the distribution
     def draw(self):
@@ -213,10 +179,6 @@ class UnigramDist:
             rand -= self.prob(word)
             if rand <= 0.0:
                 return word
-	    #endif
-	#endfor
-    #enddef
-#endclass
 
 #-------------------------------------------
 # The main routine
@@ -233,7 +195,6 @@ if __name__ == "__main__":
     # Please write the code to create the vocab over here before the function preprocessTest
     print("""Task 0: create a vocabulary(collection of word types) for the train corpus""")
 
-
     posTestCorpus = preprocessTest(vocab, posTestCorpus)
     negTestCorpus = preprocessTest(vocab, negTestCorpus)
 
@@ -243,5 +204,3 @@ if __name__ == "__main__":
     print("Probability of \"vader\": ", unigramDist.prob("vader"))
     print("Probability of \""+UNK+"\": ", unigramDist.prob(UNK))
     print("\"Random\" draw: ", unigramDist.draw())
-
-
