@@ -29,11 +29,8 @@ def readFileToCorpus(f):
         for line in file:
             i += 1
             sentence = line.split() # split the line into a list of words
-            # append this lis as an element to the list of sentences
             corpus.append(sentence)
-            if i % 1000 == 0:
-    	        # print a status message
-                sys.stderr.write("Reading sentence " + str(i) + "\n")
+
         return corpus
     else:
     # ideally we would throw an exception here, but this will suffice
@@ -123,6 +120,8 @@ class LanguageModel:
             sen = self.generateSentence()
             prob = self.getSentenceProbability(sen)
             stringGenerated = str(prob) + " " + " ".join(sen) 
+            filePointer.write(stringGenerated + '\n')
+        filePointer.close()
             
 
 # Unigram language model
@@ -281,6 +280,7 @@ if __name__ == "__main__":
     print("Random draw:", unigram_model.draw())
     print("posTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(negTestCorpus))
+    unigram_model.generateSentencesToFile(5, "unigram_output.txt")
 
     smoothed_unigram_model = SmoothedUnigramModel(trainCorpus)
     print("\nSmoothedUnigramModel output:")
@@ -289,6 +289,7 @@ if __name__ == "__main__":
     print("Random draw:", smoothed_unigram_model.draw())
     print("posTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
+    smoothed_unigram_model.generateSentencesToFile(5, "smoothed_unigram_output.txt")
 
     bigram_model = BigramModel(trainCorpus)
     print("\nBigramModel output:")
@@ -297,3 +298,4 @@ if __name__ == "__main__":
     print("Random draw given previous word \"of\":", bigram_model.draw("of"))
     print("posTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(posTestCorpus))
     print("negTestCorpus Perplexity:", bigram_model.getCorpusPerplexity(negTestCorpus))
+    bigram_model.generateSentencesToFile(5, "bigram_output.txt")
