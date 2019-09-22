@@ -8,20 +8,19 @@
 ## Part 1:
 ## Develop a smoothed n-gram language model and evaluate it on a corpus
 ##
-import os.path
-import sys
+import os
 import random
-from operator import itemgetter
+import sys
+
 from collections import defaultdict
+from math import log, exp
+
 #----------------------------------------
 #  Data input 
 #----------------------------------------
 
 # Read a text file into a corpus (list of sentences (which in turn are lists of words))
-# (taken from nested section of HW0)
 def readFileToCorpus(f):
-    """ Reads in the text file f which contains one sentence per line.
-    """
     if os.path.isfile(f):
         file = open(f, "r") # open the input file in read-only mode
         i = 0 # this is just a counter to keep track of the sentence numbers
@@ -64,6 +63,7 @@ def preprocess(corpus):
     
     return corpus
 
+
 def preprocessTest(vocab, corpus):
     # replace test words that were unseen in the training with unk
     for sen in corpus:
@@ -79,10 +79,11 @@ def preprocessTest(vocab, corpus):
 
     return corpus
 
+
 # Constants 
 UNK = "UNK"     # Unknown word token
 start = "<s>"   # Start-of-sentence token
-end = "</s>"    # End-of-sentence-token
+end = "</s>"    # End-of-sentence token
 
 
 #--------------------------------------------------------------
@@ -94,20 +95,13 @@ class LanguageModel:
     # Initialize and train the model (ie, estimate the model's underlying probability
     # distribution from the training corpus)
     def __init__(self, corpus):
-        print("""Your task is to implement three kinds of n-gram language models:
-      a) an (unsmoothed) unigram model (UnigramModel)
-      b) a unigram model smoothed using Laplace smoothing (SmoothedUnigramModel)
-      c) an unsmoothed bigram model (BigramModel)
-      """)
+        pass
 
     # Generate a sentence by drawing words according to the 
     # model's probability distribution
-    # Note: think about how to set the length of the sentence 
-    # in a principled way
     def generateSentence(self):
         print("Implement the generateSentence method in each subclass")
         return "mary had a little lamb ."
-    #emddef
 
     # Given a sentence (sen), return the probability of 
     # that sentence under the model
@@ -123,10 +117,9 @@ class LanguageModel:
 
     # Given a file (filename) and the number of sentences, generate a list
     # of sentences and write each to file along with its model probability.
-    # Note: you shouldn't need to change this method
     def generateSentencesToFile(self, numberOfSentences, filename):
         filePointer = open(filename, 'w+')
-        for i in range(0,numberOfSentences):
+        for i in range(0, numberOfSentences):
             sen = self.generateSentence()
             prob = self.getSentenceProbability(sen)
             stringGenerated = str(prob) + " " + " ".join(sen) 
@@ -135,43 +128,24 @@ class LanguageModel:
 # Unigram language model
 class UnigramModel(LanguageModel):
     def __init__(self, corpus):
-        print("Subtask: implement the unsmoothed unigram language model")
-
-# Smoothed unigram language model (use laplace for smoothing)
-class SmoothedUnigramModel(LanguageModel):
-    def __init__(self, corpus):
-        print("Subtask: implement the smoothed unigram language model")
-
-# Unsmoothed bigram language model
-class BigramModel(LanguageModel):
-    def __init__(self, corpus):
-        print("Subtask: implement the unsmoothed bigram language model")
-
-# Sample class for a unsmoothed unigram probability distribution
-# Note: 
-#       Feel free to use/re-use/modify this class as necessary for your 
-#       own code (e.g. converting to log probabilities after training). 
-#       This class is intended to help you get started
-#       with your implementation of the language models above.
-class UnigramDist:
-    def __init__(self, corpus):
         self.counts = defaultdict(float)
         self.total = 0.0
-        self.train(corpus)
-
-    # Add observed counts from corpus to the distribution
-    def train(self, corpus):
+        self.vocab = set()
+        
         for sen in corpus:
             for word in sen:
                 if word == start:
                     continue
                 self.counts[word] += 1.0
                 self.total += 1.0
+                self.vocab.add(word)
+
+        self.vocab_size = len(self.vocab)
 
     # Returns the probability of word in the distribution
     def prob(self, word):
         return self.counts[word]/self.total
-
+    
     # Generate a single random word according to the distribution
     def draw(self):
         rand = random.random()
@@ -179,6 +153,59 @@ class UnigramDist:
             rand -= self.prob(word)
             if rand <= 0.0:
                 return word
+    
+    def generateSentence(self):
+        sen = [start]
+        while True:
+            next_word = self.draw()
+            sen.append(next_word)
+            if next_word == end:
+                break
+
+        return sen
+
+    def getSentenceProbability(self, sen):
+        log_prob_sum = 0.0
+        for word in sen:
+            if word == start:
+                continue
+            if self.prob(word) == 0.0:
+                return 0.0
+            log_prob_sum += log(self.prob(word))
+
+        return exp(log_prob_sum)
+
+    def getCorpusPerplexity(self, corpus):
+        log_prob_sum = 0.0
+        corpus_total = 0.0
+        for sen in corpus:
+            for word in sen:
+                if word == start:
+                    continue
+                corpus_total += 1.0
+                if self.prob(word) == 0.0:
+                    print('Unknown word in Test corpus')
+                    sys.exit()
+                log_prob_sum += log(self.prob(word))
+
+        return exp(-log_prob_sum/corpus_total)
+
+
+# Smoothed unigram language model (use laplace for smoothing)
+class SmoothedUnigramModel(UnigramModel):
+    def __init__(self, corpus):
+        super(SmoothedUnigramModel, self).__init__(corpus)
+    
+    # override UnigramModel prob method
+    def prob(self, word):
+        return (self.counts[word]+1)/(self.total+self.vocab_size)
+
+
+# Unsmoothed bigram language model
+class BigramModel(LanguageModel):
+    def __init__(self, corpus):
+        print("Subtask: implement the unsmoothed bigram language model")
+
 
 #-------------------------------------------
 # The main routine
@@ -192,15 +219,28 @@ if __name__ == "__main__":
     negTestCorpus = readFileToCorpus('neg_test.txt')
     
     vocab = set()
-    # Please write the code to create the vocab over here before the function preprocessTest
-    print("""Task 0: create a vocabulary(collection of word types) for the train corpus""")
+    for sen in trainCorpus:
+        for word in sen:
+            vocab.add(word)
 
     posTestCorpus = preprocessTest(vocab, posTestCorpus)
     negTestCorpus = preprocessTest(vocab, negTestCorpus)
 
     # Run sample unigram dist code
-    unigramDist = UnigramDist(trainCorpus)
-    print("Sample UnigramDist output:")
-    print("Probability of \"vader\": ", unigramDist.prob("vader"))
-    print("Probability of \""+UNK+"\": ", unigramDist.prob(UNK))
-    print("\"Random\" draw: ", unigramDist.draw())
+    unigram_model = UnigramModel(trainCorpus)
+    print("UnigramModel output:")
+    print("Probability of \"vader\":", unigram_model.prob("vader"))
+    print("Probability of \""+UNK+"\":", unigram_model.prob(UNK))
+    print("\"Random\" draw:", unigram_model.draw())
+    print("posTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(posTestCorpus))
+    print("negTestCorpus Perplexity:", unigram_model.getCorpusPerplexity(negTestCorpus))
+
+    print()
+
+    smoothed_unigram_model = SmoothedUnigramModel(trainCorpus)
+    print("SmoothedUnigramModel output:")
+    print("Probability of \"vader\":", smoothed_unigram_model.prob("vader"))
+    print("Probability of \""+UNK+"\":", smoothed_unigram_model.prob(UNK))
+    print("\"Random\" draw:", smoothed_unigram_model.draw())
+    print("posTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
+    print("negTestCorpus Perplexity:", smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
