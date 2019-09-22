@@ -95,7 +95,7 @@ class FSTstate:
                     print("Rejected in state ", self.id)
                 return (False, None)
         # case 2: non-empty suffix: there needs to be one suffix that parses!)
-        hasAcceptedSuffix = False;
+        hasAcceptedSuffix = False
         for i in range(0,len(inString)+1):
             prefix = inString[0:i]
             suffix = inString[i:len(inString)]
@@ -231,7 +231,7 @@ class FST:
             self.addTransition(inStateName, s, "", outStateName)
             
     def parseInput(self, inString):
-        SHOW_STATES = False#True
+        SHOW_STATES = False # True
         inString = inString.rstrip('\n')
         (canParse, allParses)  = self.initState.parseInputFromStartState(inString)
         allParsesAsString = ""

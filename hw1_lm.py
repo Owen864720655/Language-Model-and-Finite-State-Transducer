@@ -30,26 +30,26 @@ def readFileToCorpus(f):
         for line in file:
             i += 1
             sentence = line.split() # split the line into a list of words
-            #append this lis as an element to the list of sentences
+            # append this lis as an element to the list of sentences
             corpus.append(sentence)
             if i % 1000 == 0:
-    	#print a status message: str(i) turns int i into a string
-    	#so we can concatenate it
+    	# print a status message: str(i) turns int i into a string
+    	# so we can concatenate it
                 sys.stderr.write("Reading sentence " + str(i) + "\n")
         #endif
     #endfor
         return corpus
     else:
-    #ideally we would throw an exception here, but this will suffice
+    # ideally we would throw an exception here, but this will suffice
         print("Error: corpus file ", f, " does not exist")
         sys.exit() # exit the script
     #endif
 #enddef
 
 
-# Preprocess the corpus to help avoid sess the corpus to help avoid sparsity
+# Preprocess the corpus to help avoid sparsity
 def preprocess(corpus):
-    #find all the rare words
+    # find all the rare words
     freqDict = defaultdict(int)
     for sen in corpus:
 	    for word in sen:
@@ -57,7 +57,7 @@ def preprocess(corpus):
 	#endfor
     #endfor
 
-    #replace rare words with unk
+    # replace rare words with unk
     for sen in corpus:
         for i in range(0, len(sen)):
             word = sen[i]
@@ -67,7 +67,7 @@ def preprocess(corpus):
 	#endfor
     #endfor
 
-    #bookend the sentences with start and end tokens
+    # bookend the sentences with start and end tokens
     for sen in corpus:
         sen.insert(0, start)
         sen.append(end)
@@ -77,7 +77,7 @@ def preprocess(corpus):
 #enddef
 
 def preprocessTest(vocab, corpus):
-    #replace test words that were unseen in the training with unk
+    # replace test words that were unseen in the training with unk
     for sen in corpus:
         for i in range(0, len(sen)):
             word = sen[i]
@@ -87,7 +87,7 @@ def preprocessTest(vocab, corpus):
 	#endfor
     #endfor
     
-    #bookend the sentences with start and end tokens
+    # bookend the sentences with start and end tokens
     for sen in corpus:
         sen.insert(0, start)
         sen.append(end)
@@ -111,7 +111,7 @@ class LanguageModel:
     # Initialize and train the model (ie, estimate the model's underlying probability
     # distribution from the training corpus)
     def __init__(self, corpus):
-        print("""Your task is to implement five kinds of n-gram language models:
+        print("""Your task is to implement three kinds of n-gram language models:
       a) an (unsmoothed) unigram model (UnigramModel)
       b) a unigram model smoothed using Laplace smoothing (SmoothedUnigramModel)
       c) an unsmoothed bigram model (BigramModel)
@@ -121,7 +121,7 @@ class LanguageModel:
     # Generate a sentence by drawing words according to the 
     # model's probability distribution
     # Note: think about how to set the length of the sentence 
-    #in a principled way
+    # in a principled way
     def generateSentence(self):
         print("Implement the generateSentence method in each subclass")
         return "mary had a little lamb ."
@@ -135,7 +135,7 @@ class LanguageModel:
     #enddef
 
     # Given a corpus, calculate and return its perplexity 
-    #(normalized inverse log probability)
+    # (normalized inverse log probability)
     def getCorpusPerplexity(self, corpus):
         print("Implement the getCorpusPerplexity method")
         return 0.0
@@ -162,7 +162,7 @@ class UnigramModel(LanguageModel):
     #endddef
 #endclass
 
-#Smoothed unigram language model (use laplace for smoothing)
+# Smoothed unigram language model (use laplace for smoothing)
 class SmoothedUnigramModel(LanguageModel):
     def __init__(self, corpus):
         print("Subtask: implement the smoothed unigram language model")
@@ -222,7 +222,7 @@ class UnigramDist:
 # The main routine
 #-------------------------------------------
 if __name__ == "__main__":
-    #read your corpora
+    # read your corpora
     trainCorpus = readFileToCorpus('train.txt')
     trainCorpus = preprocess(trainCorpus)
     

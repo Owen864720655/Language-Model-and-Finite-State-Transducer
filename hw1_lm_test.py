@@ -85,16 +85,16 @@ if __name__ == '__main__':
 	sen = ["<s>", "I", "UNK", "</s>"]
 	#sentence = ["<s>", "the", "UNK", "</s>"]
 
-#	get the corpora
+	# get the corpora
 	corpus = readFileToCorpus("test.txt") 
 	corpus = preprocess(corpus)
 
-	#get your models
+	# get your models
 	unigram = UnigramModel(corpus)
 	smoothedUnigram = SmoothedUnigramModel(corpus)
 	bigram = BigramModel(corpus)
 	
-	#test the models
+	# test the models
 	
 	runTests("unsmoothed_unigram", unigram, sen, corpus)
 	runTests("smoothed_unigram", smoothedUnigram, sen, corpus)
