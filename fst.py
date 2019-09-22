@@ -76,7 +76,7 @@ class FSTstate:
                     (suffixAccepted, suffixParses) = toState.parseInput(inString)
                     if suffixAccepted:
                         epsilonAccepted = True
-                        if suffixParses == []: #accepts.
+                        if suffixParses == []: # accepts
                             parse_s = [parseTuple]
                             epsilonParses.append(parse_s)
                         else:

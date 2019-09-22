@@ -1,11 +1,13 @@
 from fst import *
 
+
 # here are some predefined character sets that might come in handy.
 # you can define your own
 AZ = set('abcdefghijklmnopqrstuvwxyz')
 VOWS = set('aeiou')
 CONS = set('bcdfghjklmnprstvwxz')
 E = set('E')
+
 
 # Implement your solution here
 def buildFST():
