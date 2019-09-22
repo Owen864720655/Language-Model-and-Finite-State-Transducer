@@ -4,7 +4,7 @@ from fst import *
 AZ = set('abcdefghijklmnopqrstuvwxyz')
 VOWS = set('aeiou')
 CONS = set('bcdfghjklmnprstvwxz')
-E = set('E')
+E = set('e')
 
 
 def buildFST():
@@ -17,17 +17,12 @@ def buildFST():
 
     # The transitions:
     # ---------------------------------------
-
-    # transduce every element in this set to itself
     f.addSetTransition('q0', AZ, 'q1')
+
+    f.addSetTransition('q1', AZ, 'q1')
+    f.addSetTransition('q1', AZ-E, 'q_ing')
+    f.addTransition('q1', 'e', '', 'q_ing')
     
-    # AZ-E =  the set AZ without the elements in the set E
-    f.addSetTransition('q1', AZ-E, 'q1')
-
-    # get rid of this transition! (it overgenerates)
-    f.addSetTransition('q1', AZ, 'q_ing')
-
-    # map the empty string to ing
     f.addTransition('q_ing', '', 'ing', 'q_EOW')
 
     # Return your completed FST
@@ -44,6 +39,6 @@ if __name__ == '__main__':
 
     # Construct an FST for translating verb forms
     f = buildFST()
-    
+
     # Print out the FST translations of the input file
     f.parseInputFile(file)
