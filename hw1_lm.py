@@ -141,6 +141,8 @@ class UnigramModel(LanguageModel):
 
     # Returns the probability of word in the distribution
     def prob(self, word):
+        if self.counts[(word)] == 0.0:
+            return 0.0
         return self.counts[(word)]/self.total
     
     # Generate a single random word according to the distribution
@@ -191,6 +193,8 @@ class SmoothedUnigramModel(UnigramModel):
     
     # override UnigramModel prob method
     def prob(self, word):
+        if self.counts[(word)] == 0.0:
+            return 0.0
         return (self.counts[(word)]+1)/(self.total+self.vocab_size)
 
 
