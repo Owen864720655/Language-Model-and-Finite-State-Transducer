@@ -262,11 +262,11 @@ class BigramModel(LanguageModel):
 #-------------------------------------------
 if __name__ == '__main__':
     # read your corpora
-    trainCorpus = readFileToCorpus('train.txt')
+    trainCorpus = readFileToCorpus('data/train.txt')
     trainCorpus = preprocess(trainCorpus)
     
-    posTestCorpus = readFileToCorpus('pos_test.txt')
-    negTestCorpus = readFileToCorpus('neg_test.txt')
+    posTestCorpus = readFileToCorpus('data/pos_test.txt')
+    negTestCorpus = readFileToCorpus('data/neg_test.txt')
     
     vocab = set()
     for sen in trainCorpus:
@@ -284,7 +284,7 @@ if __name__ == '__main__':
     print('Random draw:', unigram_model.draw())
     print('posTestCorpus Perplexity:', unigram_model.getCorpusPerplexity(posTestCorpus))
     print('negTestCorpus Perplexity:', unigram_model.getCorpusPerplexity(negTestCorpus))
-    unigram_model.generateSentencesToFile(5, 'unigram_output.txt')
+    unigram_model.generateSentencesToFile(5, 'outputs/unigram_output.txt')
 
     smoothed_unigram_model = SmoothedUnigramModel(trainCorpus)
     print('\nSmoothedUnigramModel output:')
@@ -293,7 +293,7 @@ if __name__ == '__main__':
     print('Random draw:', smoothed_unigram_model.draw())
     print('posTestCorpus Perplexity:', smoothed_unigram_model.getCorpusPerplexity(posTestCorpus))
     print('negTestCorpus Perplexity:', smoothed_unigram_model.getCorpusPerplexity(negTestCorpus))
-    smoothed_unigram_model.generateSentencesToFile(5, 'smoothed_unigram_output.txt')
+    smoothed_unigram_model.generateSentencesToFile(5, 'outputs/smoothed_unigram_output.txt')
 
     bigram_model = BigramModel(trainCorpus)
     print('\nBigramModel output:')
@@ -302,4 +302,4 @@ if __name__ == '__main__':
     print('Random draw given previous word "of":', bigram_model.draw('of'))
     print('posTestCorpus Perplexity:', bigram_model.getCorpusPerplexity(posTestCorpus))
     print('negTestCorpus Perplexity:', bigram_model.getCorpusPerplexity(negTestCorpus))
-    bigram_model.generateSentencesToFile(5, 'bigram_output.txt')
+    bigram_model.generateSentencesToFile(5, 'outputs/bigram_output.txt')

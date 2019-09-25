@@ -73,7 +73,7 @@ if __name__ == '__main__':
 	sen = ['<s>', 'I', 'UNK', '</s>']
 
 	# get the corpora
-	corpus = readFileToCorpus('test.txt') 
+	corpus = readFileToCorpus('data/test.txt') 
 	corpus = preprocess(corpus)
 
 	# get your models
