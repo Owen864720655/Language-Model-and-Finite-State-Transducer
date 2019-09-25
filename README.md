@@ -2,8 +2,8 @@
 Assignment 1 for CS447 NLP Fall 2019 @ UIUC
 
 ## Part 1:
-Implementation of 3 Language Models (Unigram, Unigram with Add One Smoothing, Bigram Model) in ***hw1_lm.py***.<br>
-***hw1_lm_test.py*** tests the working of the 3 Language Models and tests them on a small toy dataset.
+Implementation of 3 Language Models (Unigram, Unigram with Add One Smoothing, Bigram) in ***hw1_lm.py***.<br>
+***hw1_lm_test.py*** tests the working of the 3 Language Models on a small toy dataset.
 
 ## Part 2:
 Implementation of a Non Deterministic Finite State Transducer to convert an infinite word to its **-ing** form.<br>
